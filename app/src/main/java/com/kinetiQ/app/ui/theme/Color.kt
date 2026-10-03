@@ -2,10 +2,23 @@ package com.kinetiQ.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Brand
+val Brand = Color(0xFF2EE6A8)
+val BrandDark = Color(0xFF0B8F68)
+val OnBrand = Color(0xFF04261C)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Dark theme surfaces
+val DarkBackground = Color(0xFF0E1116)
+val DarkSurface = Color(0xFF171C24)
+val DarkOnSurface = Color(0xFFE8EDF2)
+
+// Light theme surfaces
+val LightBackground = Color(0xFFF6F8FA)
+val LightSurface = Color(0xFFFFFFFF)
+val LightOnSurface = Color(0xFF11161C)
+
+// Live form feedback colours (used by the skeleton overlay later)
+val FormGood = Color(0xFF2ECC71)
+val FormWarning = Color(0xFFF5B301)
+val FormIncorrect = Color(0xFFE5484D)
+val FormUnknown = Color(0xFFB8C0CC)
