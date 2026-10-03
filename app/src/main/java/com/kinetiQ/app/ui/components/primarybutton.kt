@@ -1,4 +1,4 @@
-package ui.components
+package com.kinetiQ.app.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
