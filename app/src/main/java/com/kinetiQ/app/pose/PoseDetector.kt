@@ -34,9 +34,10 @@ class PoseDetector(
 
     init {
         landmarker = try {
-            build(context, Delegate.GPU).also { usingGpu = true }
-        } catch (e: Exception) {
-            try { build(context, Delegate.CPU) } catch (e2: Exception) { null }
+            build(context, Delegate.CPU)
+        } catch (t: Throwable) {
+            android.util.Log.e("KinetiQ", "Pose model failed to load", t)
+            null
         }
     }
 

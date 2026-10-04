@@ -193,26 +193,30 @@ private fun CameraPreview(session: SquatSession, front: Boolean, modifier: Modif
     DisposableEffect(front) {
         val future = ProcessCameraProvider.getInstance(context)
         future.addListener({
-            val provider = future.get()
-            val preview = Preview.Builder().build().also { it.setSurfaceProvider(previewView.surfaceProvider) }
-            val selector = ResolutionSelector.Builder()
-                .setResolutionStrategy(
-                    ResolutionStrategy(Size(640, 480), ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER)
+            try {
+                val provider = future.get()
+                val preview = Preview.Builder().build().also { it.setSurfaceProvider(previewView.surfaceProvider) }
+                val selector = ResolutionSelector.Builder()
+                    .setResolutionStrategy(
+                        ResolutionStrategy(Size(640, 480), ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER)
+                    )
+                    .build()
+                val analysis = ImageAnalysis.Builder()
+                    .setResolutionSelector(selector)
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                    .build()
+                analysis.setAnalyzer(executor) { image -> session.detector.detect(image, front) }
+                provider.unbindAll()
+                provider.bindToLifecycle(
+                    owner,
+                    if (front) CameraSelector.DEFAULT_FRONT_CAMERA else CameraSelector.DEFAULT_BACK_CAMERA,
+                    preview,
+                    analysis
                 )
-                .build()
-            val analysis = ImageAnalysis.Builder()
-                .setResolutionSelector(selector)
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
-                .build()
-            analysis.setAnalyzer(executor) { image -> session.detector.detect(image, front) }
-            provider.unbindAll()
-            provider.bindToLifecycle(
-                owner,
-                if (front) CameraSelector.DEFAULT_FRONT_CAMERA else CameraSelector.DEFAULT_BACK_CAMERA,
-                preview,
-                analysis
-            )
+            } catch (e: Exception) {
+                android.util.Log.e("KinetiQ", "Camera bind failed", e)
+            }
         }, ContextCompat.getMainExecutor(context))
         onDispose {
             try { ProcessCameraProvider.getInstance(context).get().unbindAll() } catch (e: Exception) { }
